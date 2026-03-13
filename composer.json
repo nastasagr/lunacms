@@ -1,0 +1,17 @@
+{
+    "name": "nastasagr/lunacms",
+    "description": "LunaCMS is a lightweight CMS built with PHP, designed for clarity, speed, and developer-friendly simplicity.",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Luna\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "nastasagr",
+            "email": "alexanstgr@gmail.com"
+        }
+    ],
+    "require": {}
+}
