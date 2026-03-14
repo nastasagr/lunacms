@@ -2,11 +2,12 @@
 
 namespace Luna\Core;
 
-use Core\Contracts\DatabaseInterface;
+use PDO;
+use PDOException;
 
-class Database implements DatabaseInterface
+class Database
 {
-    private ?\PDO $pdo = null;
+    private ?PDO $pdo = null;
 
     public function __construct(
         private array $config
@@ -27,15 +28,26 @@ class Database implements DatabaseInterface
             $this->config['charset']
         );
 
-        $this->pdo = new \PDO(
-            $dsn,
-            $this->config['username'],
-            $this->config['password'],
-            [
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-            ]
-        );
+        try {
+            $this->pdo = new PDO(
+                $dsn,
+                $this->config['username'],
+                $this->config['password'],
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ]
+            );
+        } catch (PDOException $e) {
+            die('Database connection failed: ' . $e->getMessage());
+        }
+    }
+
+    public function pdo(): PDO
+    {
+        $this->connect();
+
+        return $this->pdo;
     }
 
     public function query(string $sql, array $params = []): mixed
@@ -56,12 +68,5 @@ class Database implements DatabaseInterface
     public function fetchAll(string $sql, array $params = []): array
     {
         return $this->query($sql, $params)->fetchAll();
-    }
-
-    public function pdo(): \PDO
-    {
-        $this->connect();
-
-        return $this->pdo;
     }
 }
