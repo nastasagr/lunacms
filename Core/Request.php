@@ -12,8 +12,18 @@ class Request
     public function uri(): string
     {
         $uri = $_SERVER['REQUEST_URI'] ?? '/';
-        $uri = parse_url($uri, PHP_URL_PATH);
+        $path = parse_url($uri, PHP_URL_PATH);
 
-        return rtrim($uri, '/') ?: '/';
+        return rtrim($path, '/') ?: '/';
+    }
+
+    public function input(string $key, mixed $default = null): mixed
+    {
+        return $_POST[$key] ?? $_GET[$key] ?? $default;
+    }
+
+    public function all(): array
+    {
+        return array_merge($_GET, $_POST);
     }
 }
